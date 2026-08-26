@@ -11,7 +11,7 @@ app.get("/test",(req,res)=>{
     
     
     res.json({status:"ok"});
-    console.log("test route called");
+    console.log("test route called 1 2 3");
 
 });
 

@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./back
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./back:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./front
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./front:/app
+      - /app/node_modules
