@@ -9,5 +9,3 @@ Full-stack coding assignment for IndieKidz.
 - Node.js
 - Express
 - SQLite
-=======
-# AI-Image-Generator
