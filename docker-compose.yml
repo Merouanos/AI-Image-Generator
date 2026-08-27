@@ -5,6 +5,7 @@ services:
       - "3000:3000"
     volumes:
       - ./back:/app
+      - ./back/data:/app/data
       - /app/node_modules
 
   frontend:
