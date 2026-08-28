@@ -1,4 +1,6 @@
 import type { Database } from "better-sqlite3";
+import { addToQueue } from "../queue/generationQueue";
+
 
 export type ImageStyle = "storybook" | "cartoon" | "watercolor";
 
@@ -42,8 +44,8 @@ export function createGeneration(db: Database, prompt: string, style: ImageStyle
     
     
     validateGeneration(prompt, style);
-    
-     const result= db.prepare(
+
+    const result= db.prepare(
         "INSERT INTO generations (prompt, style) VALUES (?, ?)"
     ).run(prompt, style);
     
@@ -58,17 +60,21 @@ export function createGeneration(db: Database, prompt: string, style: ImageStyle
     if (!row) {
     throw new Error("Generation was created but could not be found");
     }
-
-    return {
-    id,
-    prompt: row.prompt,
-    style: row.style,
-    status: row.status,
-    imageUrl: row.image_url,
-    errorMessage: row.error_message,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    
+    const generation: Generation = {
+        id: row.id,
+        prompt: row.prompt,
+        style: row.style,
+        status: row.status,
+        imageUrl: row.image_url,
+        errorMessage: row.error_message,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
     };
+
+    addToQueue(generation);
+
+    return generation;
  
 
 
@@ -76,6 +82,18 @@ export function createGeneration(db: Database, prompt: string, style: ImageStyle
 
 };
 
+export function updateGenerationStatus(db: Database, id: number, status: GenerationStatus, imageUrl?: string | null, errorMessage?: string | null): void {
+    
+    const changes = 
+    db.prepare("UPDATE generations SET status = ?, image_url = ?, error_message = ?, updated_at = CURRENT_TIMESTAMP  WHERE id = ?")
+    .run(status, imageUrl, errorMessage, id);
+
+    if(changes===0)
+    {
+        throw new Error("generation doesn't exist");
+    }
+
+};
 export function getAllGenerations(db: Database): Generation[] {
     const rows = db.prepare("SELECT * FROM generations").all() as GenerationRow[];
     
