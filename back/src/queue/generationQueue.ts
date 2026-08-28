@@ -1,19 +1,19 @@
-import {Generation} from "../services/generationService"
-import {processGenerationQueue} from "../workers/generationWorker"
-import db from "../db/database"
-const generationQueue: Generation[] = [];
+import type {Generation} from "../services/generationService"
+import {Queue} from 'bullmq';
 
-export function addToQueue(generation: Generation): void {
-    if(generationQueue.length==0){
-    generationQueue.push(generation);
-    processGenerationQueue(db);
-    }
-    else
-    generationQueue.push(generation);
-}
 
-export function getNextGeneration(): Generation | undefined {
-    return generationQueue.shift();
+export const generationQueue = new Queue('Generations',{
+    connection:{
+        host:"redis",
+        port:6379,
+    },
+});
+
+
+export async function addToQueue(generation: Generation){
+   await generationQueue.add('generate-image',{
+    generationId: generation.id
+});
 }
 
 
