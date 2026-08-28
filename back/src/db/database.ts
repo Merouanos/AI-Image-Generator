@@ -6,3 +6,6 @@ const db = new Database("data/app.db");
 const schema = fs.readFileSync("src/db/schema.sql", "utf-8");
 db.exec(schema);
 console.log("Schema executed");
+
+
+export default db;
