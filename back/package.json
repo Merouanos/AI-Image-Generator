@@ -10,11 +10,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "worker":"tsx watch src/worker.ts"
+    "worker": "tsx watch src/worker.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
     "bullmq": "^6.3.1",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "ioredis": "^6.0.0"
   },
