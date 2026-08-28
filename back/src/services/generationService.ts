@@ -76,3 +76,38 @@ export function createGeneration(db: Database, prompt: string, style: ImageStyle
 
 };
 
+export function getAllGenerations(db: Database): Generation[] {
+    const rows = db.prepare("SELECT * FROM generations").all() as GenerationRow[];
+    
+    return rows.map(row => ({
+        id: row.id,
+        prompt: row.prompt,
+        style: row.style,
+        status: row.status,
+        imageUrl: row.image_url,
+        errorMessage: row.error_message,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+    }));
+    
+};
+export function getGenerationById(db: Database, id: number): Generation | null {
+    const row = db
+    .prepare("SELECT * FROM generations WHERE id = ?")
+    .get(id) as GenerationRow;
+    if (!row) {
+    return null;
+    }
+
+    return {
+        id: id,
+        prompt: row.prompt,
+        style: row.style,
+        status: row.status,
+        imageUrl: row.image_url,
+        errorMessage: row.error_message,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+    };
+};
+
