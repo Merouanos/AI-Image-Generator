@@ -91,14 +91,8 @@ export async function generateImage(
         ? error.message
         : "Unknown image generation error";
 
-    updateGenerationStatus(
-      db,
-      generation.id,
-      "failed",
-      null,
-      message
-    );
-
-    throw error;
+        console.error("Image generation failed:", message);
+        throw error;
+    
   }
 }

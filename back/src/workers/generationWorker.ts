@@ -6,6 +6,8 @@ import {
 } from "../services/generationService";
 import { generateImage } from "../services/imageGenerationService";
 
+const MAX_ATTEMPTS = 3;
+
 const generationWorker = new Worker(
   "Generations",
   async (job: Job) => {
@@ -25,9 +27,31 @@ const generationWorker = new Worker(
       "processing"
     );
 
-    await generateImage(db, generation);
+    try {
+      await generateImage(db, generation);
 
-    console.log("Job complete:", job.id);
+      console.log("Job complete:", job.id);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unknown image generation error";
+
+      const isFinalAttempt =
+        job.attemptsMade + 1 >= MAX_ATTEMPTS;
+
+      if (isFinalAttempt) {
+        updateGenerationStatus(
+          db,
+          generation.id,
+          "failed",
+          null,
+          message
+        );
+      }
+
+      throw error;
+    }
   },
   {
     connection: {
@@ -36,11 +60,3 @@ const generationWorker = new Worker(
     },
   }
 );
-
-generationWorker.on("completed", (job) => {
-  console.log(`Job ${job.id} completed`);
-});
-
-generationWorker.on("failed", (job, error) => {
-  console.error(`Job ${job?.id} failed:`, error.message);
-});
