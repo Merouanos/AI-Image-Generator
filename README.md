@@ -230,7 +230,6 @@ Current configuration:
 
 - Maximum attempts: 3
 - Backoff: exponential
-- Initial delay: 10 seconds
 
 The idea is:
 
