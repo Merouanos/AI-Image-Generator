@@ -7,25 +7,11 @@ interface GeneratedImageProps {
 export function GeneratedImage({
   generation,
 }: GeneratedImageProps) {
-  if (!generation) {
-    return null;
-  }
-
-  if (generation.status === "failed") {
-  return (
-    <div className="rounded-xl border p-5 text-red-600">
-      <p className="font-semibold">
-        Generation failed
-      </p>
-
-      <p>
-        Image generation failed. Please try again.
-      </p>
-    </div>
-  );
-}
-
-  if (generation.status !== "completed" || !generation.imageUrl) {
+  if (
+    !generation ||
+    generation.status !== "completed" ||
+    !generation.imageUrl
+  ) {
     return null;
   }
 
@@ -45,7 +31,7 @@ export function GeneratedImage({
 
         <p>
           <span className="font-semibold">Style:</span>{" "}
-          {generation.style??"None"}
+          {generation.style ?? "None"}
         </p>
 
         <p>
@@ -55,7 +41,9 @@ export function GeneratedImage({
 
         <p>
           <span className="font-semibold">Created:</span>{" "}
-          {new Date(generation.createdAt).toLocaleString()}
+          {new Date(
+            generation.createdAt
+          ).toLocaleString()}
         </p>
       </div>
     </div>
