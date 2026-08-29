@@ -1,68 +1,75 @@
-import type { ImageStyle } from "../types/generation";
+import type { ImageStyle, Generation } from "../types/generation";
 
-
-
-
-
-
-export async function createGeneration(prompt:string , style:ImageStyle|null){
-
-    console.log('generate');
-    let res;
-    if(style){
-    res = await fetch(`/api/generations`,{
-        method:"POST",
-        headers: {
+export async function createGeneration(
+  prompt: string,
+  style: ImageStyle | null
+): Promise<Generation> {
+  try {
+    const response = await fetch("/api/generations", {
+      method: "POST",
+      headers: {
         "Content-Type": "application/json",
-        },
-        
-        body: JSON.stringify({ prompt, style }),
+      },
+      body: JSON.stringify({
+        prompt,
+        style,
+      }),
+    });
 
-
-
-         });
-        }
-    else{
-      res = await fetch(`/api/generations`,{
-        method:"POST",
-        headers: {
-        "Content-Type": "application/json",
-        },
-        
-        body: JSON.stringify({ prompt }),
-
-
-
-         });
-
+    if (!response.ok) {
+      throw new Error(
+        `Failed to create generation: ${response.status}`
+      );
     }
 
+    return await response.json();
+  } catch (error) {
+    console.error("Create generation error:", error);
 
-    if (!res.ok) {
-    throw new Error("Failed to create generation");
-    }
-    return res.json();
-
-
-};
-
-export async function getGeneration(id: number) {
-  const response = await fetch(`/api/generations/${id}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch generation");
+    throw new Error(
+      "Unable to start image generation. Please try again."
+    );
   }
-
-  return response.json();
 }
 
+export async function getGeneration(
+  id: number
+): Promise<Generation> {
+  try {
+    const response = await fetch(`/api/generations/${id}`);
 
-export async function getGenerations() {
-  const response = await fetch(`/api/generations`);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch generation: ${response.status}`
+      );
+    }
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch generations");
+    return await response.json();
+  } catch (error) {
+    console.error("Get generation error:", error);
+
+    throw new Error(
+      "Unable to check the generation status."
+    );
   }
+}
 
-  return response.json();
+export async function getGenerations(): Promise<Generation[]> {
+  try {
+    const response = await fetch("/api/generations");
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch generations: ${response.status}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Get generations error:", error);
+
+    throw new Error(
+      "Could not load generation history."
+    );
+  }
 }

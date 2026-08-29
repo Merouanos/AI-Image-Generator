@@ -79,7 +79,7 @@ function App() {
       <div>
         <GenerationForm onGenerate={handleGenerate} />
 
-        <ErrorMessage message={error} />
+        <ErrorMessage message={error ?? pollingError} />
 
         <GenerationStatus generation={generation} />
 
