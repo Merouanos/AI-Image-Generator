@@ -25,20 +25,28 @@ function App() {
   const [generations, setGenerations] = useState<Generation[]>([]);
 
 
-  const handleHistory = async () => {
+const handleHistory = async () => {
+  console.log("history clicked");
+
   if (showHistory) {
     setShowHistory(false);
     return;
   }
 
   try {
-  const data = await getGenerations();
-  setGenerations(data);
-  setError(null);
-} catch (error) {
-  console.error(error);
-  setError("Could not load generation history.");
-}
+    console.log("loading history...");
+
+    const data = await getGenerations();
+
+    console.log("history data:", data);
+
+    setGenerations(data);
+    setShowHistory(true);
+    setError(null);
+  } catch (error) {
+    console.error("history error:", error);
+    setError("Could not load generation history.");
+  }
 };
  
   const {
