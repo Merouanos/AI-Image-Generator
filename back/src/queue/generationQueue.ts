@@ -20,7 +20,7 @@ export async function addToQueue(
         attempts: 3,
         backoff: {
             type: "exponential",
-            delay: 10000,
+            delay: 2000,
         },
     }
 );

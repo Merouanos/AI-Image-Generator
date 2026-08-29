@@ -11,7 +11,11 @@ const MAX_ATTEMPTS = 3;
 const generationWorker = new Worker(
   "Generations",
   async (job: Job) => {
-    console.log("Processing job:", job.id, job.data);
+    console.log(
+      `Processing job: ${job.id}`,
+      job.data,
+      `attempt ${job.attemptsMade + 1}/${MAX_ATTEMPTS}`
+    );
 
     const generationId = job.data.generationId as number;
 
@@ -30,7 +34,7 @@ const generationWorker = new Worker(
     try {
       await generateImage(db, generation);
 
-      console.log("Job complete:", job.id);
+      console.log(`Job ${job.id} completed`);
     } catch (error) {
       const message =
         error instanceof Error
@@ -40,7 +44,15 @@ const generationWorker = new Worker(
       const isFinalAttempt =
         job.attemptsMade + 1 >= MAX_ATTEMPTS;
 
+      console.log(
+        `Job ${job.id} failed: ${message}`
+      );
+
       if (isFinalAttempt) {
+        console.log(
+          `Job ${job.id} exhausted all retries. Marking generation as failed.`
+        );
+
         updateGenerationStatus(
           db,
           generation.id,
@@ -60,3 +72,4 @@ const generationWorker = new Worker(
     },
   }
 );
+
