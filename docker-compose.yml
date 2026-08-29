@@ -1,6 +1,8 @@
 services:
   backend:
     build: ./back
+    depends_on:
+    - redis
     env_file:
       - .env
     ports:
