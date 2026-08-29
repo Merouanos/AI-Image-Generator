@@ -3,8 +3,11 @@ import path from "node:path";
 import "./db/database";
 import router from "./routes/generations";
 
+
+
 const app = express();
 const PORT = 3000;
+
 
 app.use(express.json());
 

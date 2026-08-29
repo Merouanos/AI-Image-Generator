@@ -11,7 +11,17 @@ export const generationQueue = new Queue("Generations", {
 export async function addToQueue(
   generation: Generation
 ): Promise<void> {
-  await generationQueue.add("generate-image", {
-    generationId: generation.id,
-  });
+  await generationQueue.add(
+    "generate-image",
+    {
+        generationId: generation.id,
+    },
+    {
+        attempts: 3,
+        backoff: {
+            type: "exponential",
+            delay: 10000,
+        },
+    }
+);
 }

@@ -81,7 +81,7 @@ export async function createGeneration(
     updatedAt: row.updated_at,
   };
 
-  // Wait until the job has actually been submitted to BullMQ.
+  
   await addToQueue(generation);
 
   return generation;
